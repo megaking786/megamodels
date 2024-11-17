@@ -1,0 +1,285 @@
+<html><head><base href="/" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3DModelHub - Professional 3D Model Sharing Platform</title>
+
+<!-- External Libraries -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+
+<style>
+:root {
+    --primary: #2563eb;
+    --secondary: #4b5563;
+    --accent: #f59e0b;
+    --background: #ffffff;
+    --text: #1f2937;
+    --card-bg: #f3f4f6;
+}
+
+[data-theme="dark"] {
+    --background: #1f2937;
+    --text: #f3f4f6;
+    --card-bg: #374151;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--background);
+    color: var(--text);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: var(--card-bg);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.search-container {
+    position: relative;
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 2px solid var(--primary);
+    font-size: 1rem;
+}
+
+.model-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.model-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.model-card:hover {
+    transform: translateY(-5px);
+}
+
+.model-viewer {
+    width: 100%;
+    height: 200px;
+    background: #2a2a2a;
+}
+
+.model-info {
+    padding: 1rem;
+}
+
+.categories {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    overflow-x: auto;
+}
+
+.category-btn {
+    padding: 0.5rem 1rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.dark-mode-toggle {
+    padding: 0.5rem;
+    border-radius: 50%;
+    background: none;
+    border: 2px solid var(--text);
+    color: var(--text);
+    cursor: pointer;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .model-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="logo">3DModelHub</div>
+    <div class="nav-links">
+        <a href="https://example.com/explore">Explore</a>
+        <a href="https://example.com/upload">Upload</a>
+        <a href="https://example.com/dashboard">Dashboard</a>
+        <button id="loginBtn">Login</button>
+        <button class="dark-mode-toggle" id="darkModeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+</nav>
+
+<div class="search-container">
+    <input type="search" class="search-bar" placeholder="Search 3D models...">
+</div>
+
+<div class="categories">
+    <button class="category-btn">All Categories</button>
+    <button class="category-btn">Vehicles</button>
+    <button class="category-btn">Characters</button>
+    <button class="category-btn">Architecture</button>
+    <button class="category-btn">Nature</button>
+    <button class="category-btn">Industrial</button>
+</div>
+
+<main class="model-grid">
+    <!-- Model cards will be dynamically generated -->
+</main>
+
+<script>
+// Dark mode functionality
+const darkModeToggle = document.getElementById('darkModeToggle');
+const body = document.body;
+
+darkModeToggle.addEventListener('click', () => {
+    body.dataset.theme = body.dataset.theme === 'dark' ? 'light' : 'dark';
+    darkModeToggle.innerHTML = body.dataset.theme === 'dark' ? 
+        '<i class="fas fa-sun"></i>' : 
+        '<i class="fas fa-moon"></i>';
+});
+
+// Sample model data
+const models = [
+    {
+        title: "Vintage Car",
+        author: "JohnDoe",
+        likes: 234,
+        downloads: 1200,
+        thumbnail: "car.jpg"
+    },
+    {
+        title: "Medieval Castle",
+        author: "ArchitectPro",
+        likes: 567,
+        downloads: 3400,
+        thumbnail: "castle.jpg"
+    },
+    // Add more models...
+];
+
+// Generate model cards
+function createModelCards() {
+    const grid = document.querySelector('.model-grid');
+    grid.innerHTML = ''; // Clear existing content
+
+    models.forEach(model => {
+        const card = document.createElement('div');
+        card.className = 'model-card fade-in';
+        card.innerHTML = `
+            <div class="model-viewer">
+                <!-- Three.js viewer will be initialized here -->
+            </div>
+            <div class="model-info">
+                <h3>${model.title}</h3>
+                <p>by ${model.author}</p>
+                <div class="stats">
+                    <span><i class="fas fa-heart"></i> ${model.likes}</span>
+                    <span><i class="fas fa-download"></i> ${model.downloads}</span>
+                </div>
+            </div>
+        `;
+        grid.appendChild(card);
+        initializeViewer(card.querySelector('.model-viewer'));
+    });
+}
+
+// Initialize Three.js viewer
+function initializeViewer(container) {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+    
+    // Add sample geometry
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshPhongMaterial({ color: 0x44aa88 });
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+    
+    // Add lighting
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(0, 1, 1);
+    scene.add(light);
+    
+    camera.position.z = 5;
+    
+    // Animation loop
+    function animate() {
+        requestAnimationFrame(animate);
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
+        renderer.render(scene, camera);
+    }
+    animate();
+}
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', () => {
+    createModelCards();
+});
+
+// Search functionality
+const searchBar = document.querySelector('.search-bar');
+searchBar.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    const filteredModels = models.filter(model => 
+        model.title.toLowerCase().includes(searchTerm) ||
+        model.author.toLowerCase().includes(searchTerm)
+    );
+    // Update displayed models
+    createModelCards(filteredModels);
+});
+</script>
+</body></html>
